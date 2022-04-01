@@ -24,11 +24,10 @@ export default function Register(){
             const response = await api.post('/users', { name, email, password });
             const { id } = response.data;
 
-            alert('Usuário cadastrado com sucesso!');
+            alert('User registered sucessfuly!');
 
             history('/');
         } catch (err) {
-            console.log(err);
             if (err.response) {
                 alert('Fail to register, try again.\n' + err.response.data.error);
             } else {

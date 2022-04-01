@@ -1,8 +1,10 @@
 import React, {useState} from 'react';
-import { Link, useNavigate  } from 'react-router-dom'
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { FiKey } from 'react-icons/fi';
 
+
 import api from '../../services/api';
+import useAuth from '../../services/useAuth';
 
 import './styles.css';
 
@@ -10,22 +12,27 @@ export default function Login() {
     
     const [email,setEmail] = useState('');
     const [password,setPassword] = useState('');
-    const history = useNavigate();
+    
+    const { login } = useAuth();
+    const { state } = useLocation();
+
+    const navigate = useNavigate();
 
     async function handleLogin(e) {
         e.preventDefault();
 
         try{
-            console.log("try");
             const response = await api.post('/sessions', {email, password});
-
-            console.log("response", response.data);
 
             localStorage.setItem('userId', response.data.id);
             localStorage.setItem('userName', response.data.name);
 
-            console.log("profile");
-            // history('/profile');
+            
+            login().then(() => {
+                navigate(state?.path || "/dashboard");
+            });
+
+            // navigate('/dashboard');
         } catch (err) {
             alert('Falha no login, tente novamente');
         }
